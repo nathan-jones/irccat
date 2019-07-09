@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import os
 import sys
 import re
@@ -11,7 +11,7 @@ import subprocess
 # "uptime", with any extension. It would happily run both uptime.sh and uptime.py, or
 # a script in whatever language you like. Command names are limited to [0-9a-z].
 
-path = '/usr/share/irccat/'
+path = './'
 
 # Example of retrieving all the environment variables.
 # We only need command here as all the others will be available in the script's environment.
@@ -30,16 +30,8 @@ if re.match('^[a-z0-9]+$', command):
         if re.match('^%s\.[a-z]+$' % command, filename):
             found = True
 
-            proc = subprocess.Popen(os.path.join(path, filename), stdout=subprocess.PIPE)
-            stdout = proc.stdout
-
-            while True:
-                # We do this to avoid buffering from the subprocess stdout
-                print(os.read(stdout.fileno(), 65536))
-                sys.stdout.flush()
-
-                if proc.poll() is not None:
-                    break
+            stdoutdata = subprocess.getoutput(os.path.join(path, filename))
+            print(stdoutdata)
 
 if not found:
     print("Unknown command '%s'" % command)

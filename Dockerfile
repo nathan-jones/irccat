@@ -19,9 +19,13 @@ WORKDIR /go/src/github.com/irccloud/irccat
 RUN CGO_ENABLED=0 go get -t -v ./... && go build -a .
 
 # Step two: copy over the binary and root certs
-FROM scratch
+FROM debian:buster
 COPY --from=build /go/bin/irccat /irccat
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+RUN apt update && apt install -y \
+	python3 \
+	ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
 
 EXPOSE 12345
 EXPOSE 8045
